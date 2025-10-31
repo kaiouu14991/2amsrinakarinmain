@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <title>2AM Euro Service Form</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{ -webkit-text-size-adjust:100%; }
+    body{
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:#0a0a0a; min-height:100vh; padding:20px; position:relative; color:#fff;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    body::before{
+      content:''; position:fixed; inset:0; z-index:0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(120,119,198,.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,107,107,.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 90%, rgba(78,205,196,.15) 0%, transparent 50%);
+    }
+
+    .header-wrap{ width:100%; max-width:800px; margin:0 auto 18px; position:relative; z-index:1;}
+    .header{
+      width:100%; height:220px; border-radius:16px; overflow:hidden;
+      border:1px solid rgba(255,255,255,.1); background:#000; position:relative;
+      display:flex; align-items:stretch; justify-content:center;
+      box-shadow:0 10px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(120,119,198,.2);
+      transition:transform .3s ease, box-shadow .3s ease;
+    }
+    .header:hover{ transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,.8), 0 0 30px rgba(120,119,198,.3); }
+    .header::before{
+      content:''; position:absolute; inset:0; z-index:1;
+      background:linear-gradient(135deg, rgba(120,119,198,.15) 0%, transparent 50%, rgba(255,107,107,.15) 100%);
+      opacity:0; transition:opacity .5s ease;
+    }
+    .header:hover::before{ opacity:1; }
+    .header::after{
+      content:''; position:absolute; inset:-2px; z-index:0;
+      background:linear-gradient(45deg, #7877c6, #ff6b6b, #4ecdc4, #7877c6);
+      background-size:300% 300%; border-radius:16px; opacity:0;
+      animation:gradientShift 4s ease infinite; transition:opacity .3s ease;
+    }
+    .header:hover::after{ opacity:.3; }
+    @keyframes gradientShift{ 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+    .header img{ width:100%; height:100%; object-fit:contain; object-position:center; display:block; filter:brightness(.92); position:relative; z-index:2; transition:filter .3s ease, transform .3s ease; }
+    .header:hover img{ filter:brightness(1) contrast(1.1); transform:scale(1.02); }
+
+    .container{ max-width:800px; margin:0 auto; position:relative; z-index:2;}
+    .form-card{
+      background:rgba(26,26,26,.95); backdrop-filter:blur(10px);
+      border-radius:16px; padding:32px; border:1px solid rgba(255,255,255,.1);
+      box-shadow:0 20px 60px rgba(0,0,0,.5);
+    }
+    .form-title{ font-size:26px; font-weight:600; margin-bottom:8px;}
+    .form-subtitle{ color:#aaa; margin-bottom:24px; font-size:14px;}
+    .required-note{ color:#ff6b6b; margin-bottom:20px; font-size:14px;}
+
+    .form-group{ margin-bottom:20px;}
+    label{ display:block; font-weight:500; margin-bottom:8px; font-size:15px;}
+    .required{ color:#ff6b6b; margin-left:4px;}
+
+    input[type="text"], input[type="tel"], input[type="date"], textarea, select{
+      width:100%; padding:12px 14px; border:2px solid rgba(255,255,255,.1);
+      border-radius:10px; background:rgba(255,255,255,.05); color:#fff; font-size:15px; transition:.3s;
+      font-family:inherit; -webkit-appearance:none; appearance:none;
+    }
+    input:focus, textarea:focus, select:focus{
+      outline:none; border-color:#7877c6; box-shadow:0 0 0 3px rgba(120,119,198,.2);
+      background:rgba(255,255,255,.08);
+    }
+    textarea{ resize:vertical; min-height:100px;}
+
+    input[type="date"]::-webkit-calendar-picker-indicator{ filter:invert(1); cursor:pointer; }
+
+    .radio-group{ display:flex; flex-direction:column; gap:12px; margin-top:12px;}
+    .radio-option{
+      display:flex; align-items:center; gap:12px; padding:14px;
+      border:2px solid rgba(255,255,255,.1); border-radius:10px;
+      background:rgba(255,255,255,.03); transition:.3s; cursor:pointer; color:#fff;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .radio-option:hover{ border-color:#7877c6; background:rgba(120,119,198,.1); transform:translateX(5px);}
+    .radio-option:active{ transform:translateX(3px); }
+    .radio-option input[type="radio"]{ width:20px; height:20px; accent-color:#7877c6; cursor:pointer; flex-shrink:0;}
+
+    .checkbox-group{ margin-top:12px;}
+    .checkbox-option{
+      display:flex; align-items:center; gap:12px; padding:14px;
+      border:2px solid rgba(255,255,255,.1); border-radius:10px;
+      background:rgba(255,255,255,.03); transition:.3s; margin-bottom:10px; cursor:pointer; color:#fff;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .checkbox-option:hover{ border-color:#7877c6; background:rgba(120,119,198,.1); transform:translateX(5px);}
+    .checkbox-option:active{ transform:translateX(3px); }
+    .checkbox-option input[type="checkbox"]{ width:20px; height:20px; accent-color:#7877c6; cursor:pointer; flex-shrink:0;}
+    .consent-text{ color:#ccc; font-size:14px; line-height:1.6; margin-bottom:15px;}
+
+    .file-upload{
+      border:2px dashed #7877c6; border-radius:10px; padding:24px; text-align:center;
+      background:rgba(120,119,198,.1); cursor:pointer; transition:.3s;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .file-upload:hover{ background:rgba(120,119,198,.2); border-color:#9f9edc; transform:translateY(-2px);}
+    .file-upload:active{ transform:translateY(0); }
+    .file-upload-label{ color:#7877c6; font-weight:600; font-size:16px; cursor:pointer; display:block;}
+    .file-note{ color:#aaa; font-size:13px; margin-top:8px;}
+
+    .button-group{ display:flex; gap:12px; margin-top:28px;}
+    button{
+      flex:1; padding:14px 28px; border:none; border-radius:10px; font-size:16px; font-weight:600; cursor:pointer;
+      background:linear-gradient(135deg, #7877c6 0%, #ff6b6b 100%); color:#fff; transition:.3s;
+      box-shadow:0 5px 20px rgba(120,119,198,.4); -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+    button:hover{ transform:translateY(-2px); box-shadow:0 10px 30px rgba(120,119,198,.6);}
+    button:active{ transform:translateY(0); }
+
+    .page{ display:none;}
+    .page.active{ display:block; animation:fadeIn .5s ease;}
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:translateY(0)}}
+
+    .progress-bar{ background:rgba(255,255,255,.1); height:6px; border-radius:10px; margin:16px 0 20px; overflow:hidden;}
+    .progress-fill{ background:linear-gradient(135deg,#7877c6 0%, #ff6b6b 100%); height:100%; transition:width .3s; border-radius:10px; box-shadow:0 0 10px rgba(120,119,198,.5);}
+
+    input[type="file"]{ display:none;}
+
+    #imagePreview{ margin-top:16px; display:none; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:12px; }
+    .preview-item{
+      position:relative; border-radius:10px; overflow:hidden; border:2px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.05); aspect-ratio:1;
+    }
+    .preview-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+    .preview-remove{
+      position:absolute; top:6px; right:6px; width:28px; height:28px;
+      background:rgba(255,107,107,.95); border:none; border-radius:50%;
+      color:#fff; font-size:18px; font-weight:bold; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:.3s; box-shadow:0 2px 8px rgba(0,0,0,.3);
+    }
+    .preview-remove:hover{ background:#ff6b6b; transform:scale(1.1); }
+
+    .modal-overlay{
+      position:fixed; inset:0; background:rgba(0,0,0,.8); display:none; align-items:center; justify-content:center; z-index:9999;
+      backdrop-filter:blur(5px);
+    }
+    .modal-overlay.active{ display:flex; animation:fadeInOverlay .3s ease; }
+    @keyframes fadeInOverlay{ from{opacity:0} to{opacity:1} }
+
+    .success-modal{
+      background:linear-gradient(135deg, rgba(26,26,26,.98) 0%, rgba(30,30,40,.98) 100%);
+      border-radius:20px; padding:50px 40px; text-align:center;
+      border:2px solid rgba(120,119,198,.3); box-shadow:0 30px 80px rgba(0,0,0,.9);
+      max-width:450px; animation:slideUp .4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position:relative; overflow:hidden;
+    }
+    .success-modal::before{
+      content:''; position:absolute; inset:0; background:radial-gradient(circle at 100% 0%, rgba(120,119,198,.1) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    @keyframes slideUp{ from{opacity:0; transform:translateY(40px)} to{opacity:1; transform:translateY(0)} }
+
+    .success-icon{
+      width:90px; height:90px; margin:0 auto 25px;
+      background:linear-gradient(135deg, #7877c6 0%, #ff6b6b 100%);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:45px; animation:scaleIn .6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow:0 0 40px rgba(120,119,198,.6), inset 0 0 20px rgba(255,255,255,.2);
+      position:relative;
+    }
+    @keyframes scaleIn{ from{transform:scale(0)} to{transform:scale(1)} }
+
+    .success-title{
+      font-size:32px; font-weight:700; margin-bottom:15px;
+      background:linear-gradient(135deg, #7877c6 0%, #ff6b6b 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+      background-clip:text; letter-spacing:.5px;
+    }
+
+    .success-subtitle{ color:#bbb; font-size:16px; line-height:1.6; margin-bottom:10px; }
+    .success-brand{ color:#7877c6; font-weight:600; font-size:17px; margin-top:15px; text-shadow:0 0 15px rgba(120,119,198,.4); letter-spacing:.3px; }
+    .modal-button{
+      margin-top:35px; padding:15px 40px; background:linear-gradient(135deg, #7877c6 0%, #ff6b6b 100%);
+      color:#fff; border:none; border-radius:12px; font-size:17px; font-weight:600;
+      cursor:pointer; transition:.3s; box-shadow:0 8px 25px rgba(120,119,198,.5);
+      position:relative;
+    }
+    .modal-button:hover{ transform:translateY(-3px); box-shadow:0 12px 35px rgba(120,119,198,.7); }
+    .modal-button:active{ transform:translateY(-1px); }
+
+    /* Smart Date */
+    .date-control{ position:relative; display:flex; gap:10px; align-items:center; }
+    .date-display{ letter-spacing:.3px; }
+    .date-icon-btn{
+      padding:12px 14px; border:2px solid rgba(255,255,255,.1); border-radius:10px;
+      background:rgba(255,255,255,.06); color:#fff; cursor:pointer;
+      transition:.3s; user-select:none;
+    }
+    .date-icon-btn:hover{ border-color:#7877c6; background:rgba(120,119,198,.1); }
+    .native-date{
+      position:absolute; inset:0; opacity:0; pointer-events:none;
+    }
+
+    @media (min-width: 1440px){ .container,.header-wrap{ max-width:900px; } }
+    @media (min-width: 1024px) and (max-width: 1439px){ .container{ max-width:800px; } body{ padding:24px; } }
+    @media (min-width: 834px) and (max-width: 1023px){
+      body{ padding:20px; } .header{ height:200px; } .header:hover{ transform:translateY(-3px); }
+      .form-card{ padding:28px; } .button-group{ flex-direction:row; }
+      #imagePreview{ grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+    @media (min-width: 768px) and (max-width: 833px){
+      body{ padding:16px; } .header-wrap{ margin-bottom:16px; } .header{ height:180px; border-radius:14px; }
+      .header:hover{ transform:translateY(-3px); } .header::after{ border-radius:14px; }
+      .form-card{ padding:24px; border-radius:14px; } .form-title{ font-size:24px; }
+      .form-subtitle{ font-size:14px; margin-bottom:20px; } .form-group{ margin-bottom:18px; }
+      label{ font-size:15px; } input, textarea, select{ padding:11px 13px; font-size:15px; }
+      .radio-option, .checkbox-option{ padding:13px; font-size:15px; } button{ padding:13px 24px; font-size:15px; }
+      .button-group{ flex-direction:row; gap:12px; } #imagePreview{ grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:12px; }
+    }
+    @media (min-width: 601px) and (max-width: 767px){
+      body{ padding:14px; } .header-wrap{ margin-bottom:14px; } .header{ height:160px; border-radius:12px; }
+      .header:hover{ transform:translateY(-2px); } .header::after{ border-radius:12px; }
+      .form-card{ padding:22px; border-radius:12px; } .form-title{ font-size:22px; }
+      .form-subtitle{ font-size:13px; margin-bottom:18px; } .required-note{ font-size:13px; margin-bottom:16px; }
+      .form-group{ margin-bottom:16px; } label{ font-size:14px; margin-bottom:7px; }
+      input, textarea, select{ padding:11px 12px; font-size:15px; }
+      .radio-option, .checkbox-option{ padding:12px; font-size:14px; }
+      .consent-text{ font-size:13px; } .file-upload{ padding:20px; }
+      button{ padding:12px 22px; font-size:15px; } .button-group{ flex-direction:row; gap:10px; margin-top:22px; }
+      #imagePreview{ grid-template-columns:repeat(3, 1fr); gap:10px; }
+    }
+    @media (min-width: 481px) and (max-width: 600px){
+      body{ padding:12px; } .header-wrap{ margin-bottom:12px; } .header{ height:170px; border-radius:12px; }
+      .header:hover{ transform:translateY(-2px); } .header::after{ border-radius:12px; } .header img{ object-fit:contain; padding:10px; }
+      .form-card{ padding:20px; border-radius:12px; } .form-title{ font-size:21px; }
+      .form-subtitle{ font-size:13px; margin-bottom:16px; } .required-note{ font-size:13px; margin-bottom:16px; }
+      .form-group{ margin-bottom:16px; } label{ font-size:14px; margin-bottom:6px; }
+      input, textarea, select{ padding:11px 12px; font-size:16px; }
+      .radio-option, .checkbox-option{ padding:12px; font-size:14px; }
+      .file-upload{ padding:18px; } .file-upload-label{ font-size:15px; } .file-note{ font-size:12px; }
+      button{ padding:12px 20px; font-size:15px; } .button-group{ flex-direction:column; gap:10px; margin-top:20px; }
+      #imagePreview{ grid-template-columns:repeat(3, 1fr); gap:10px; }
+      .preview-remove{ width:26px; height:26px; font-size:16px; }
+      .success-modal{ padding:40px 30px; max-width:90%; } .success-title{ font-size:26px; }
+      .success-icon{ width:70px; height:70px; font-size:35px; }
+    }
+    @media (max-width: 480px){
+      body{ padding:10px; } .header-wrap{ margin-bottom:10px; } .header{ height:150px; border-radius:10px; }
+      .header:hover{ transform:translateY(-1px); } .header::after{ border-radius:10px; } .header img{ object-fit:contain; padding:8px; }
+      .form-card{ padding:16px; border-radius:10px; } .form-title{ font-size:20px; }
+      .form-subtitle{ font-size:12px; margin-bottom:14px; } .required-note{ font-size:12px; margin-bottom:14px; }
+      .form-group{ margin-bottom:14px; } label{ font-size:14px; margin-bottom:6px; }
+      input, textarea, select{ padding:10px 11px; font-size:16px; }
+      .radio-option, .checkbox-option{ padding:11px; font-size:14px; }
+      .radio-option span, .checkbox-option span{ line-height:1.4; }
+      .consent-text{ font-size:12px; line-height:1.5; }
+      .file-upload{ padding:16px; } .file-upload-label{ font-size:14px; }
+      .file-note{ font-size:11px; } button{ padding:11px 18px; font-size:14px; }
+      .button-group{ flex-direction:column; gap:8px; margin-top:18px; }
+      #imagePreview{ grid-template-columns:repeat(2, 1fr); gap:8px; }
+      .preview-item{ border-radius:8px; }
+      .preview-remove{ width:24px; height:24px; font-size:15px; top:4px; right:4px; }
+      .progress-bar{ height:5px; margin:12px 0 16px; }
+      .success-modal{ padding:35px 25px; max-width:95%; }
+      .success-title{ font-size:24px; }
+      .success-icon{ width:65px; height:65px; font-size:32px; }
+      .success-subtitle{ font-size:14px; }
+      .modal-button{ padding:12px 30px; font-size:15px; margin-top:25px; }
+    }
+    @media (max-width: 359px){
+      body{ padding:8px; } .header{ height:150px; } .form-card{ padding:14px; }
+      .form-title{ font-size:18px; } .form-subtitle{ font-size:11px; }
+      label{ font-size:13px; } input, textarea, select{ padding:9px 10px; font-size:16px; }
+      .radio-option, .checkbox-option{ padding:10px; font-size:13px; }
+      button{ padding:10px 16px; font-size:14px; }
+      #imagePreview{ grid-template-columns:repeat(2, 1fr); gap:6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-wrap">
+    <div class="header">
+      <img src="https://cdn.jsdelivr.net/gh/P2scalWang/Image22amz/BannerFinal.png" alt="2:am — Euro Service and Detailing (Banner)">
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="form-card">
+      <h1 class="form-title">ข้อมูลติดต่อผู้ใช้บริการ</h1>
+      <p class="form-subtitle">กรุณากรอกข้อมูลติดต่อของผู้ใช้บริการ</p>
+
+      <div class="required-note">* ระบุว่าเป็นคำถามที่จำเป็น</div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressBar" style="width:50%;"></div>
+      </div>
+
+      <form id="serviceForm">
+        <!-- Page 1 -->
+        <div class="page active" id="page1">
+          <div class="form-group">
+            <label>ชื่อ-สกุล <span class="required">*</span></label>
+            <input type="text" id="name" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>ชื่อเล่น</label>
+            <input type="text" id="nickname" placeholder="คำตอบของคุณ">
+          </div>
+
+          <div class="form-group">
+            <label>เบอร์ติดต่อ <span class="required">*</span></label>
+            <input type="tel" id="phone" placeholder="0956432678" required>
+          </div>
+
+          <div class="form-group">
+            <label>ID LINE</label>
+            <input type="text" id="line" placeholder="คำตอบของคุณ">
+          </div>
+
+          <div class="form-group">
+            <label>อีเมล</label>
+            <input type="text" id="email" placeholder="คำตอบของคุณ">
+          </div>
+
+          <div class="form-group">
+            <label class="consent-text">
+              ฉันยินดีรับข่าวสารและข้อเสนอสิทธิประโยชน์ต่าง ๆ จาก บริษัท ทเว้นตี้วัน แอนด์ เซอร์วิส กรุ๊ป จำกัด รวมถึงบริการอื่น ๆ ที่เกี่ยวข้องกับ PDPA
+(เราอาจติดต่อคุณในบางโอกาสและคุณสามารถยกเลิกได้ทุกเมื่อ)<span class="required">*</span>
+            </label>
+            <div class="checkbox-group">
+              <label class="checkbox-option">
+                <input type="checkbox" name="consent" value="agree" required>
+                <span>ยอมรับ</span>
+              </label>
+              <label class="checkbox-option">
+                <input type="checkbox" name="consent" value="decline">
+                <span>ไม่ยินยอม</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="btn-next" onclick="nextPage()">ถัดไป</button>
+          </div>
+        </div>
+
+        <!-- Page 2 -->
+        <div class="page" id="page2">
+          <div class="form-group">
+            <label style="background:linear-gradient(135deg,#7877c6 0%, #ff6b6b 100%); color:#fff; padding:12px; border-radius:10px; margin-bottom:12px; box-shadow:0 5px 20px rgba(120,119,198,.3);">
+              ส่วนของผู้ใช้บริการ (เจ้าหน้าที่)
+            </label>
+            <p style="color:#aaaaaa; font-size:14px; margin-top:8px;">เก็บข้อมูลความละเอียดรถยนต์</p>
+          </div>
+
+          <!-- SMART DATE: วันที่เข้ารับบริการ -->
+          <div class="form-group">
+            <label>วันที่เข้ารับบริการ <span class="required">*</span></label>
+            <div class="date-control">
+              <input type="text" id="serviceDate_display" class="date-display" placeholder="dd/mm/yyyy" inputmode="numeric" autocomplete="off" required>
+              <button type="button" class="date-icon-btn" onclick="openNativePicker('serviceDate_picker')" aria-label="เปิดปฏิทิน">📅</button>
+              <input type="date" id="serviceDate_picker" class="native-date" aria-hidden="true">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>ทะเบียนรถ <span class="required">*</span></label>
+            <input type="text" id="license" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>สีรถ <span class="required">*</span></label>
+            <input type="text" id="color" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>ยี่ห้อรถยนต์ <span class="required">*</span></label>
+            <input type="text" id="brand" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>รุ่นรถยนต์ <span class="required">*</span></label>
+            <input type="text" id="model" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>เลขตัวถัง <span class="required">*</span></label>
+            <input type="text" id="chassis" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>เลขไมล์ <span class="required">*</span></label>
+            <input type="text" id="mileage" placeholder="คำตอบของคุณ" required>
+          </div>
+
+          <div class="form-group">
+            <label>รายการเซอร์วิส</label>
+            <textarea id="service" placeholder="คำตอบของคุณ"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>ประเภทงาน Service <span class="required">*</span></label>
+            <div class="radio-group" id="serviceTypeGroup">
+              <label class="radio-option">
+                <input type="radio" name="serviceType" value="ตรวจเช็คหรือเปลี่ยนถ่ายของเหลว" required>
+                <span>ตรวจเช็คหรือเปลี่ยนสายของเหลว</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="serviceType" value="ซ่อมเบาภายในวัน">
+                <span>ซ่อมเบาภายในวัน</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="serviceType" value="ซ่อมหนักทิ้งรถ">
+                <span>ซ่อมหนักทิ้งรถ</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="serviceType" value="other">
+                <span>อื่นๆ</span>
+              </label>
+            </div>
+
+            <div id="otherServiceWrapper" style="display:none; margin-top:12px;">
+              <label for="otherService" style="margin-bottom:8px;">
+                โปรดระบุรายละเอียดงาน Service (อื่นๆ) <span class="required">*</span>
+              </label>
+              <input type="text" id="otherService" placeholder="เช่น เปลี่ยนระบบไฟ เพิ่มอุปกรณ์ตกแต่ง ฯลฯ">
+            </div>
+          </div>
+
+          <!-- SMART DATE: วันนัดส่งมอบรถ -->
+          <div class="form-group">
+            <label>วันนัดส่งมอบรถ</label>
+            <div class="date-control">
+              <input type="text" id="returnDate_display" class="date-display" placeholder="dd/mm/yyyy" inputmode="numeric" autocomplete="off">
+              <button type="button" class="date-icon-btn" onclick="openNativePicker('returnDate_picker')" aria-label="เปิดปฏิทิน">📅</button>
+              <input type="date" id="returnDate_picker" class="native-date" aria-hidden="true">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>เวลานัดส่งมอบรถ</label>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <input type="text" id="returnTimeHour" placeholder="ชั่วโมง" maxlength="2" style="flex:1; text-align:center;" pattern="[0-9]*" inputmode="numeric">
+              <span style="font-size:20px; font-weight:bold;">:</span>
+              <input type="text" id="returnTimeMinute" placeholder="นาที" maxlength="2" style="flex:1; text-align:center;" pattern="[0-9]*" inputmode="numeric">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>รูปรถ <span class="required">*</span></label>
+            <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+              <label class="file-upload-label">📎 เพิ่มไฟล์ (0/4)</label>
+              <div class="file-note">อัปโหลดไฟล์รูปภาพให้ครบ 4 ภาพ • สูงสุด 10 MB/ไฟล์</div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" multiple>
+            <div id="imagePreview"></div>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="btn-back" onclick="prevPage()">ก่อนหน้า</button>
+            <button type="submit" class="btn-submit">ส่ง</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="successModal">
+    <div class="success-modal">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">ส่งแบบฟอร์มเรียบร้อยแล้ว!</h2>
+      <p class="success-subtitle">ขอบคุณที่ให้ความไว้วางใจ</p>
+      <p class="success-brand">2AM Euro Service</p>
+      <button class="modal-button" onclick="closeSuccessModal()">ตกลง</button>
+    </div>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = 'https://n8n.srv1097662.hstgr.cloud/webhook/2amsrinakarinmain';
+    let selectedFiles = [];
+
+    /* ---------- PAGE NAV ---------- */
+    function nextPage(){
+      const name=document.getElementById('name').value.trim();
+      const phone=document.getElementById('phone').value.trim();
+      const consent=document.querySelector('input[name="consent"]:checked');
+      if(!name||!phone||!consent){ alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน'); return; }
+      document.getElementById('page1').classList.remove('active');
+      document.getElementById('page2').classList.add('active');
+      document.getElementById('progressBar').style.width='100%';
+      window.scrollTo(0,0);
+    }
+    function prevPage(){
+      document.getElementById('page2').classList.remove('active');
+      document.getElementById('page1').classList.add('active');
+      document.getElementById('progressBar').style.width='50%';
+      window.scrollTo(0,0);
+    }
+
+    /* ---------- SERVICE TYPE OTHER ---------- */
+    const serviceTypeRadios=document.querySelectorAll('input[name="serviceType"]');
+    const otherWrapper=document.getElementById('otherServiceWrapper');
+    const otherInput=document.getElementById('otherService');
+    function handleServiceTypeChange(){
+      const selected=document.querySelector('input[name="serviceType"]:checked');
+      if(selected && selected.value==='other'){
+        otherWrapper.style.display='block';
+        otherInput.setAttribute('required','required');
+      }else{
+        otherWrapper.style.display='none';
+        otherInput.removeAttribute('required');
+        otherInput.value='';
+      }
+    }
+    serviceTypeRadios.forEach(r=>r.addEventListener('change',handleServiceTypeChange));
+
+    /* ---------- IMAGE PREVIEW (4 REQUIRED) ---------- */
+    function updateImagePreview() {
+      const previewContainer = document.getElementById('imagePreview');
+      previewContainer.innerHTML = '';
+      if (selectedFiles.length === 0) { previewContainer.style.display = 'none'; }
+      else { previewContainer.style.display = 'grid'; }
+      selectedFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const previewItem = document.createElement('div');
+          previewItem.className = 'preview-item';
+          previewItem.innerHTML = `
+            <img src="${e.target.result}" alt="Preview ${index + 1}">
+            <button type="button" class="preview-remove" onclick="removeImage(${index})" title="ลบรูปภาพ">×</button>
+          `;
+          previewContainer.appendChild(previewItem);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    function removeImage(index) {
+      selectedFiles.splice(index, 1);
+      updateImagePreview();
+      updateFileUploadLabel();
+    }
+    document.getElementById('fileInput').addEventListener('change', e => {
+      const files = Array.from(e.target.files);
+      const remaining = 4 - selectedFiles.length;
+      if (remaining <= 0) { alert('สามารถอัปโหลดได้สูงสุด 4 รูปเท่านั้น'); e.target.value=''; return; }
+      if (files.length > remaining) {
+        alert(`สามารถอัปโหลดได้อีกเพียง ${remaining} รูปเท่านั้น (สูงสุด 4 รูป)`);
+        selectedFiles = [...selectedFiles, ...files.slice(0, remaining)];
+      } else {
+        selectedFiles = [...selectedFiles, ...files];
+      }
+      updateImagePreview();
+      updateFileUploadLabel();
+      e.target.value = '';
+    });
+    function updateFileUploadLabel(){
+      const label = document.querySelector('.file-upload-label');
+      const note  = document.querySelector('.file-note');
+      const count = selectedFiles.length;
+      label.textContent = `📎 เพิ่มไฟล์ (${count}/4)`;
+      if (count === 0) { note.textContent = 'อัปโหลดไฟล์รูปภาพให้ครบ 4 ภาพ • สูงสุด 10 MB/ไฟล์'; note.style.color = '#aaa'; }
+      else if (count < 4) { note.textContent = `อัปโหลดอีก ${4 - count} รูปให้ครบ 4 ภาพ`; note.style.color = '#ff6b6b'; }
+      else { note.textContent = 'อัปโหลดครบ 4 ภาพแล้ว • สามารถลบเพื่อเปลี่ยนรูปได้'; note.style.color = '#4ecdc4'; }
+    }
+
+    /* ---------- TIME INPUT ---------- */
+    const hourInput = document.getElementById('returnTimeHour');
+    const minuteInput = document.getElementById('returnTimeMinute');
+    hourInput.addEventListener('input', e => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 0) { val = Math.min(23, parseInt(val)).toString().padStart(1, '0'); }
+      e.target.value = val;
+      if (val.length === 2) minuteInput.focus();
+    });
+    minuteInput.addEventListener('input', e => {
+      let val = e.target.value.replace(/\D/g, '');
+      if (val.length > 0) { val = Math.min(59, parseInt(val)).toString().padStart(1, '0'); }
+      e.target.value = val;
+    });
+
+    /* ---------- SMART DATE HELPERS ---------- */
+    function openNativePicker(id){ document.getElementById(id).showPicker?.(); document.getElementById(id).focus(); }
+
+    function toISOFromParts(d, m, y){
+      const mm = String(m).padStart(2,'0');
+      const dd = String(d).padStart(2,'0');
+      return `${y}-${mm}-${dd}`;
+    }
+    function isValidDMY(d, m, y){
+      const dt = new Date(`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}T00:00:00`);
+      return dt.getFullYear()===Number(y) && (dt.getMonth()+1)===Number(m) && dt.getDate()===Number(d);
+    }
+    // รับได้ทั้ง dd/mm/yyyy และ mm/dd/yyyy -> แปลงเป็น dd/mm/yyyy + iso
+    function parseFlexibleDate(text){
+      const raw = (text||'').trim().replace(/\./g,'/').replace(/-/g,'/').replace(/\s+/g,'');
+      const m = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if(!m) return { display:'', iso:'' };
+      let a = Number(m[1]), b = Number(m[2]), y = Number(m[3]);
+
+      // ตัดสินใจว่าเป็น dd/mm หรือ mm/dd:
+      // - ถ้า a>12 => a คือวันแน่ ๆ (dd/mm)
+      // - ถ้า b>12 => b คือวันแน่ ๆ (mm/dd)
+      // - ถ้าทั้งคู่ <=12 => สมมติ dd/mm (ตามที่ต้องการ)
+      let d, mo;
+      if (a>12) { d=a; mo=b; }
+      else if (b>12) { d=b; mo=a; }
+      else { d=a; mo=b; }
+
+      if (!isValidDMY(d, mo, y)) return { display:'', iso:'' };
+      return { display: `${String(d).padStart(2,'0')}/${String(mo).padStart(2,'0')}/${y}`, iso: toISOFromParts(d, mo, y) };
+    }
+
+    function wireSmartDate(displayId, pickerId){
+      const $disp = document.getElementById(displayId);
+      const $pick = document.getElementById(pickerId);
+
+      // เมื่อเลือกจากปฏิทิน → อัปเดตเป็น dd/mm/yyyy
+      $pick.addEventListener('change', () => {
+        if(!$pick.value) { $disp.value=''; return; }
+        const [y,m,d] = $pick.value.split('-').map(Number);
+        $disp.value = `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
+      });
+
+      // โฟกัส/คลิกที่ช่องแสดง → เปิดปฏิทิน
+      $disp.addEventListener('focus', () => openNativePicker(pickerId));
+      $disp.addEventListener('click', () => openNativePicker(pickerId));
+
+      // พิมพ์เอง/แปะตัวหนังสือ → แปลงอัตโนมัติ
+      $disp.addEventListener('blur', () => {
+        if(!$disp.value) { $pick.value=''; return; }
+        const {display, iso} = parseFlexibleDate($disp.value);
+        if(!iso){
+          alert('กรุณากรอกวันที่รูปแบบ dd/mm/yyyy (เช่น 07/11/2025)');
+          $disp.focus();
+          return;
+        }
+        $disp.value = display;
+        $pick.value = iso; // sync ISO
+      });
+    }
+
+    // ผูกใช้งาน Smart Date
+    wireSmartDate('serviceDate_display', 'serviceDate_picker');
+    wireSmartDate('returnDate_display', 'returnDate_picker');
+
+    /* ---------- SEND WEBHOOK ---------- */
+    async function sendToWebhook(formData) {
+      const res = await fetch(WEBHOOK_URL, { method: 'POST', body: formData });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      try { return await res.json(); } catch { return {}; }
+    }
+
+    document.getElementById('serviceForm').addEventListener('submit', async function(e){
+      e.preventDefault();
+
+      if (selectedFiles.length !== 4) {
+        alert(`กรุณาอัปโหลดรูปรถให้ครบ 4 ภาพ (ปัจจุบัน ${selectedFiles.length}/4)`);
+        return;
+      }
+
+      // ดึง ISO จาก native date
+      const serviceISO = document.getElementById('serviceDate_picker').value;
+      const serviceType=document.querySelector('input[name="serviceType"]:checked');
+      if(!serviceISO||!serviceType){ alert('กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน'); return; }
+      if(serviceType.value==='other' && !otherInput.value.trim()){
+        alert('กรุณาระบุรายละเอียดงาน Service ในช่อง "อื่นๆ"'); otherInput.focus(); return;
+      }
+
+      const submitBtn=document.querySelector('.btn-submit');
+      const original=submitBtn.textContent;
+      submitBtn.textContent='กำลังส่งข้อมูล...'; submitBtn.disabled=true;
+
+      try{
+        const formData = new FormData();
+
+        // Customer info
+        formData.append('name', document.getElementById('name').value.trim());
+        formData.append('nickname', document.getElementById('nickname').value.trim());
+        formData.append('phone', document.getElementById('phone').value.trim());
+        formData.append('lineId', document.getElementById('line').value.trim());
+        formData.append('email', document.getElementById('email').value.trim());
+        formData.append('consentPDPA', (document.querySelector('input[name="consent"]:checked')||{}).value || '');
+
+        // Service info
+        formData.append('serviceDate', serviceISO); // ส่ง ISO
+        formData.append('serviceDate_display', document.getElementById('serviceDate_display').value.trim()); // เก็บ display ไว้เผื่อใช้
+        formData.append('licensePlate', document.getElementById('license').value.trim());
+        formData.append('carColor', document.getElementById('color').value.trim());
+        formData.append('carBrand', document.getElementById('brand').value.trim());
+        formData.append('carModel', document.getElementById('model').value.trim());
+        formData.append('chassisNumber', document.getElementById('chassis').value.trim());
+        formData.append('mileage', document.getElementById('mileage').value.trim());
+        formData.append('serviceDetails', document.getElementById('service').value.trim());
+        formData.append('serviceType', serviceType.value);
+        formData.append('serviceTypeOther', serviceType.value==='other' ? otherInput.value.trim() : '');
+
+        // Return date/time (optional)
+        const returnISO = document.getElementById('returnDate_picker').value || '';
+        formData.append('returnDate', returnISO);
+        formData.append('returnDate_display', document.getElementById('returnDate_display').value.trim());
+
+        const hourVal = document.getElementById('returnTimeHour').value.trim();
+        const minuteVal = document.getElementById('returnTimeMinute').value.trim();
+        let returnTime = '';
+        if (hourVal || minuteVal) {
+          const hour = (hourVal || '00').padStart(2, '0');
+          const minute = (minuteVal || '00').padStart(2, '0');
+          returnTime = `${hour}:${minute}`;
+        }
+        formData.append('returnTime', returnTime);
+
+        // Meta
+        formData.append('submittedAt', new Date().toISOString());
+        formData.append('userAgent', navigator.userAgent);
+        formData.append('screenResolution', `${window.screen.width}x${window.screen.height}`);
+
+        // Images (exactly 4)
+        selectedFiles.slice(0,4).forEach((file, index) => { formData.append(`image_${index}`, file); });
+
+        await sendToWebhook(formData);
+
+        document.getElementById('successModal').classList.add('active');
+
+        setTimeout(() => {
+          document.getElementById('serviceForm').reset();
+          // reset smart dates
+          document.getElementById('serviceDate_display').value = '';
+          document.getElementById('serviceDate_picker').value = '';
+          document.getElementById('returnDate_display').value = '';
+          document.getElementById('returnDate_picker').value = '';
+
+          selectedFiles = [];
+          updateImagePreview();
+          updateFileUploadLabel();
+          prevPage();
+        }, 2000);
+      }catch(err){
+        console.error(err);
+        alert('เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง');
+      }finally{
+        submitBtn.textContent=original; submitBtn.disabled=false;
+      }
+    });
+
+    /* ---------- EXCLUSIVE CHECKBOX ---------- */
+    const checkboxes=document.querySelectorAll('input[name="consent"]');
+    checkboxes.forEach(cb=>{
+      cb.addEventListener('change',function(){
+        if(this.checked){ checkboxes.forEach(x=>{ if(x!==this) x.checked=false; }); }
+      });
+    });
+
+    function closeSuccessModal(){ document.getElementById('successModal').classList.remove('active'); }
+
+    // ตั้งค่าป้ายเริ่มต้น
+    updateFileUploadLabel();
+  </script>
+</body>
+</html>
